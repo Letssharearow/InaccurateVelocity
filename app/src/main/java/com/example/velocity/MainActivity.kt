@@ -14,6 +14,8 @@ import com.example.velocity.R
 class MainActivity : AppCompatActivity() {
 
     private lateinit var locationManager: LocationManager
+    private var previousLocation: Location? = null
+    private var previousTimestamp: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,14 +48,21 @@ class MainActivity : AppCompatActivity() {
             val location: Location? =
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
-            // Do something with the location
-            location?.let {
-                val latitude = it.latitude
-                val longitude = it.longitude
-                Log.i("MainActivity", "Latitude: $latitude, Longitude: $longitude")
-                // Use latitude and longitude values
-                // ...
-            }
+        // Check if there is a previous location
+        if (previousLocation != null && location != null) {
+            val currentTimestamp = System.currentTimeMillis()
+
+            // Calculate the time difference in seconds
+            val timeDifference = (currentTimestamp - previousTimestamp) / 1000.0
+
+            // Calculate the distance between the previous and current location
+            val distance = previousLocation!!.distanceTo(location)
+
+            // Calculate the velocity (speed) in meters per second
+            val velocity = distance / timeDifference
+
+            Log.i("MainActivity", "Velocity: $velocity m/s")
+        }
         }
     }
 
