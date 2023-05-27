@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("MainActivity", "onCreate")
+        Log.d("MainActivity_debug", "onCreate")
         setContentView(R.layout.activity_main)
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            Log.i("MainActivity_debug", "ActivityCompat.checkSelfPermission")
+            Log.d("MainActivity_debug", "checkSelfPermission")
             // Request location permission
             ActivityCompat.requestPermissions(
                 this,
@@ -35,25 +35,26 @@ class MainActivity : AppCompatActivity() {
             )
         } else {
             // Location permission already granted
-            Log.i("MainActivity_debug", "startLocationUpdates")
+            Log.d("MainActivity_debug", "startLocationUpdates")
             startLocationUpdates()
         }
     }
 
     private fun startLocationUpdates() {
-        Log.i("MainActivity_debug", "startLocationUpdates")
+        Log.d("MainActivity_debug", "startLocationUpdates")
         locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 // Do something with the updated location
                 val velocity = location.speed
 
-                Log.i("MainActivity_debug", "$velocity")
+                Log.d("MainActivity_debug", "velocity $velocity")
             }
 
             override fun onProviderDisabled(provider: String) {}
 
             override fun onProviderEnabled(provider: String) {}
 
+            @Deprecated("Deprecated in Java")
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
         }
 
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                 // Location permission granted
                 startLocationUpdates()
             } else {
-                Log.i("MainActivity_debug", "ACCESS DENIED")
+                Log.d("MainActivity_debug", "onRequestPermissionsResult")
                 // Location permission denied
                 // Handle the denial or disable location-related functionality
             }
