@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Velocity</string>
+    <string name="velocity_format">%1$.2f min/km</string>
+
 </resources>

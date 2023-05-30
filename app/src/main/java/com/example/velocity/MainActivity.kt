@@ -9,20 +9,31 @@ import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import com.example.velocity.R
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var locationManager: LocationManager
-    private var previousLocation: Location? = null
-    private var previousTimestamp: Long = 0
+    private var startingLocation: Location? = null
+    private var currentLocation: Location? = null
     private var locationListener: LocationListener? = null
+    private lateinit var textView: TextView
+    private lateinit var button: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("MainActivity", "onCreate")
+        Log.d("MainActivity_debug", "onCreate")
         setContentView(R.layout.activity_main)
+
+        textView = findViewById(R.id.output)
+        findViewById<Button>(R.id.button)
+            .setOnClickListener {
+                Log.d("MainActivity_debug", "User tapped the Supabutton")
+                startingLocation = currentLocation
+            }
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
@@ -54,12 +65,27 @@ class MainActivity : AppCompatActivity() {
 
         locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
-                // Do something with the updated location
-                val velocity = location.speed
+                Log.i("MainActivity_debug", "onLocationChanged")
+                currentLocation = location
+                if(startingLocation === null){
+                    return
+                }
+                val velocityMps = location.speed // Velocity in meters per second
 
-                Log.i("MainActivity_debug", "$velocity")
+                val distance = location.distanceTo(startingLocation!!)
+                Log.i("MainActivity_debug", "distance: $distance")
+
+                val time = (location.time - startingLocation!!.time) / 1000
+                Log.i("MainActivity_debug", "time: $time")
+
+
+                // Convert velocity from meters per second to minutes per kilometer
+                val velocityMpk = if (velocityMps != 0f) 1000 / velocityMps / 60 else 0f
+
+                val velocityText = getString(R.string.velocity_format, velocityMpk)
+                textView.text = time.toString() + " " +  distance.toString()
+                Log.i("MainActivity_debug", "velocityMpk: $velocityMpk")
             }
-
             override fun onProviderDisabled(provider: String) {}
 
             override fun onProviderEnabled(provider: String) {
