@@ -18,10 +18,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var locationManager: LocationManager
     private var startingLocation: Location? = null
+    private var prevLocation: Location? = null
     private var currentLocation: Location? = null
     private var locationListener: LocationListener? = null
+    private var meters: Float = 0f
     private lateinit var textView: TextView
-    private lateinit var button: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity() {
             .setOnClickListener {
                 Log.d("MainActivity_debug", "User tapped the Supabutton")
                 startingLocation = currentLocation
+                prevLocation = startingLocation
+                meters = 0f
             }
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -70,21 +73,17 @@ class MainActivity : AppCompatActivity() {
                 if(startingLocation === null){
                     return
                 }
-                val velocityMps = location.speed // Velocity in meters per second
 
-                val distance = location.distanceTo(startingLocation!!)
-                Log.i("MainActivity_debug", "distance: $distance")
+                meters += prevLocation?.distanceTo(currentLocation!!) ?: 0f
+                prevLocation = currentLocation
 
                 val time = (location.time - startingLocation!!.time) / 1000
                 Log.i("MainActivity_debug", "time: $time")
 
 
                 // Convert velocity from meters per second to minutes per kilometer
-                val velocityMpk = if (velocityMps != 0f) 1000 / velocityMps / 60 else 0f
 
-                val velocityText = getString(R.string.velocity_format, velocityMpk)
-                textView.text = time.toString() + " " +  distance.toString()
-                Log.i("MainActivity_debug", "velocityMpk: $velocityMpk")
+                textView.text = time.toString() + " " +  meters
             }
             override fun onProviderDisabled(provider: String) {}
 
