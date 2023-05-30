@@ -22,14 +22,18 @@ class MainActivity : AppCompatActivity() {
     private var currentLocation: Location? = null
     private var locationListener: LocationListener? = null
     private var meters: Float = 0f
-    private lateinit var textView: TextView
+    private lateinit var timeView: TextView
+    private lateinit var distanceView: TextView
+    private lateinit var velocityView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("MainActivity_debug", "onCreate")
         setContentView(R.layout.activity_main)
 
-        textView = findViewById(R.id.output)
+        timeView = findViewById(R.id.time)
+        distanceView = findViewById(R.id.distance)
+        velocityView = findViewById(R.id.velocity)
         findViewById<Button>(R.id.button)
             .setOnClickListener {
                 Log.d("MainActivity_debug", "User tapped the Supabutton")
@@ -60,6 +64,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getTime(seconds: Long): String {
+        val hours = seconds / 3600;
+        val minutes = (seconds % 3600) / 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds % 60)
+    }
+
     private fun startLocationUpdates() {
         Log.i("MainActivity_debug", "startLocationUpdates")
         val location: Location? =
@@ -76,14 +86,21 @@ class MainActivity : AppCompatActivity() {
 
                 meters += prevLocation?.distanceTo(currentLocation!!) ?: 0f
                 prevLocation = currentLocation
+                distanceView.text = getString(R.string.distance, meters / 1000)
+                Log.i("MainActivity_debug", "meters: $meters")
 
                 val time = (location.time - startingLocation!!.time) / 1000
-                Log.i("MainActivity_debug", "time: $time")
+                val timeString = getTime(time)
+                timeView.text = timeString
+                Log.i("MainActivity_debug", "time: $timeString")
 
-
-                // Convert velocity from meters per second to minutes per kilometer
-
-                textView.text = time.toString() + " " +  meters
+                val minutes = time / 60f
+                Log.i("MainActivity_debug", "minutes: $minutes")
+                val kilometers = (meters / 1000f)
+                Log.i("MainActivity_debug", "kilometers: $kilometers")
+                val velocityMpk = minutes / kilometers
+                velocityView.text = getString(R.string.velocity_format, velocityMpk)
+                Log.i("MainActivity_debug", "velocityMpk: $velocityMpk")
             }
             override fun onProviderDisabled(provider: String) {}
 
