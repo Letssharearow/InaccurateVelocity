@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,27 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <TextView
-        android:id="@+id/accelerate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Aktuelle Geschwindigkeit"
-        android:textColor="#CCC"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/distance"
-        app:layout_constraintVertical_bias="0.202" />
-
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Zeit"
-        android:textColor="#CCC"
+        android:textColor="#000"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,12 +24,24 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Distanz"
-        android:textColor="#CCC"
+        android:textColor="#000"
         android:textSize="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time" />
+
+    <TextView
+        android:id="@+id/accelerate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aktuelle Geschwindigkeit"
+        android:textColor="#000"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/velocity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/distance" />
 
     <TextView
         android:id="@+id/velocity"
@@ -52,14 +49,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="Geschwindigkeit"
-        android:textColor="#CCC"
+        android:textColor="#000"
         android:textSize="42sp"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/accelerate"
-        app:layout_constraintVertical_bias="0.085" />
+        app:layout_constraintTop_toBottomOf="@+id/accelerate" />
 
     <Button
         android:id="@+id/button"
@@ -68,8 +63,8 @@
         android:text="Start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.956" />
+        app:layout_constraintTop_toBottomOf="@+id/velocity" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
