@@ -9,6 +9,7 @@ import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var timeView: TextView
     private lateinit var distanceView: TextView
     private lateinit var velocityView: TextView
+    private var running: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +39,27 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button)
             .setOnClickListener {
                 Log.d("MainActivity_debug", "User tapped the Supabutton")
-                startingLocation = currentLocation
-                prevLocation = startingLocation
-                meters = 0f
+                running = !running
+                if (running) {
+                    // Change button text to "Stop" when running is true
+                    findViewById<Button>(R.id.button).text = "Stop"
+                    // Set the running logic here
+                    startingLocation = currentLocation
+                    prevLocation = startingLocation
+                    meters = 0f
+
+                    // Hide distanceView and timeView when running is true
+                    distanceView.visibility = View.GONE
+                    timeView.visibility = View.GONE
+                } else {
+                    // Change button text to "Start" when running is false
+                    findViewById<Button>(R.id.button).text = "Start"
+                    // Set the stopping logic here
+
+                    // Show distanceView and timeView when running is false
+                    distanceView.visibility = View.VISIBLE
+                    timeView.visibility = View.VISIBLE
+                }
             }
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -80,17 +100,17 @@ class MainActivity : AppCompatActivity() {
             override fun onLocationChanged(location: Location) {
                 Log.i("MainActivity_debug", "onLocationChanged")
                 currentLocation = location
-                if(startingLocation === null){
+                if(startingLocation === null || !running){
                     return
                 }
 
                 meters += prevLocation?.distanceTo(currentLocation!!) ?: 0f
                 prevLocation = currentLocation
-                distanceView.text = getString(R.string.distance, meters / 1000)
+                distanceView.text =  "Distanz: " +  getString(R.string.distance, meters / 1000)
                 Log.i("MainActivity_debug", "meters: $meters")
 
                 val time = (location.time - startingLocation!!.time) / 1000
-                val timeString = getTime(time)
+                val timeString = "Zeit: " + getTime(time)
                 timeView.text = timeString
                 Log.i("MainActivity_debug", "time: $timeString")
 
