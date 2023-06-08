@@ -90,6 +90,13 @@ class MainActivity : AppCompatActivity() {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds % 60)
     }
 
+    private fun convertSecondsToMinutesWithSeconds(seconds: Float): String {
+        Log.i("MainActivity_debug", "seconds: $seconds")
+        val mins = (seconds / 60).toInt()
+        val secs = (seconds % 60).toInt()
+        return "" + mins + "." + secs
+    }
+
     private fun startLocationUpdates() {
         Log.i("MainActivity_debug", "startLocationUpdates")
         val location: Location? =
@@ -118,9 +125,10 @@ class MainActivity : AppCompatActivity() {
                 Log.i("MainActivity_debug", "minutes: $minutes")
                 val kilometers = (meters / 1000f)
                 Log.i("MainActivity_debug", "kilometers: $kilometers")
-                val velocityMpk = minutes / kilometers
-                velocityView.text = getString(R.string.velocity_format, velocityMpk)
-                Log.i("MainActivity_debug", "velocityMpk: $velocityMpk")
+                val velocitySpk = time / kilometers
+
+                velocityView.text = convertSecondsToMinutesWithSeconds(velocitySpk) + " min/km"
+                Log.i("MainActivity_debug", "velocityMpk: $velocitySpk")
             }
             override fun onProviderDisabled(provider: String) {}
 
