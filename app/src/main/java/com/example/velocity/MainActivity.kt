@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private var prevLocation: Location? = null
     private var currentLocation: Location? = null
     private var locationListener: LocationListener? = null
-    private var meters: Float = 0f
+    private var meters: Double = 0.0
     private lateinit var timeView: TextView
     private lateinit var distanceView: TextView
     private lateinit var velocityView: TextView
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                     // Set the running logic here
                     startingLocation = currentLocation
                     prevLocation = startingLocation
-                    meters = 0f
+                    meters = 0.0
 
                     // Hide distanceView and timeView when running is true
                     distanceView.visibility = View.GONE
@@ -90,11 +90,23 @@ class MainActivity : AppCompatActivity() {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds % 60)
     }
 
-    private fun convertSecondsToMinutesWithSeconds(seconds: Float): String {
+    private fun convertSecondsToMinutesWithSeconds(seconds: Double): String {
         Log.i("MainActivity_debug", "seconds: $seconds")
-        val mins = (seconds / 60).toInt()
-        val secs = (seconds % 60).toInt()
-        return "" + mins + "." + secs
+        if(seconds == Double.POSITIVE_INFINITY){
+            return ""
+        }
+//        val seconds = 239f
+        val mins = (seconds / 60)
+        Log.i("MainActivity_debug", "mins: $mins")
+        val minInt = mins.toInt()
+        Log.i("MainActivity_debug", "minInt: $minInt")
+        val decimals = mins - minInt
+        Log.i("MainActivity_debug", "decimals: $decimals")
+        val secs = decimals * 60
+        Log.i("MainActivity_debug", "secs: $secs")
+        val result = "%d.%02d".format(minInt, secs.toInt())
+        Log.i("MainActivity_debug", "result: $result")
+        return result
     }
 
     private fun startLocationUpdates() {
@@ -108,10 +120,12 @@ class MainActivity : AppCompatActivity() {
                 Log.i("MainActivity_debug", "onLocationChanged")
                 currentLocation = location
                 if(startingLocation === null || !running){
+                    startingLocation = location
                     return
                 }
 
-                meters += prevLocation?.distanceTo(currentLocation!!) ?: 0f
+                val newMeters = prevLocation?.distanceTo(currentLocation!!) ?: 0f
+                meters += newMeters - (newMeters * Math.random() * 18 * 0.01)
                 prevLocation = currentLocation
                 distanceView.text =  "Distanz: " +  getString(R.string.distance, meters / 1000)
                 Log.i("MainActivity_debug", "meters: $meters")
@@ -185,7 +199,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 123
-        private const val LOCATION_UPDATE_INTERVAL: Long = 1000 // 1 second
+        private const val LOCATION_UPDATE_INTERVAL: Long = 100 // 1 second
         private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Float = 0f // 0 meters
     }
 }
